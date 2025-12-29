@@ -1,0 +1,2 @@
+Write a short, friendly confirmation email to a restaurant lead.
+Do not mention scoring or internal logic.
