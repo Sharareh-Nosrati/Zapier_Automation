@@ -1,92 +1,86 @@
 # Zapier Automation – AI Lead Qualification Workflow
 
-## Overview
-This Zapier workflow orchestrates the end-to-end handling of inbound leads:
-from form submission, to scoring, to internal Slack alerts, to customer email confirmation.
+## What this is
+This folder documents a Zapier-based automation system used to
+qualify inbound restaurant leads using rule-based logic and AI assistance.
 
-The focus is on **explainable decision logic** and **human-in-the-loop interaction**,
-not black-box automation.
-
----
-
-## High-level Flow
-
-Google Form  
-→ Zapier  
-→ Google Sheets (CRM table)  
-→ Rule-based scoring (Python)  
-→ OpenAI (summary + explanation)  
-→ Slack alerts + threaded Q&A  
-→ Customer confirmation email
+The system was designed to support Sales and Marketing teams
+with fast, explainable lead handling.
 
 ---
 
-## Trigger
-- **Google Form – New Form Response**
-- Collects:
-  - name
-  - restaurant name
-  - city
-  - source
-  - actions / interest
-  - contact email (validated)
+## How data enters the system
+Leads enter through a Google Form filled by potential restaurant customers.
+
+The form collects:
+- restaurant name
+- city
+- lead source
+- customer interest/actions
+- contact email
+
+Each submission triggers the main automation.
 
 ---
 
-## Data Storage
-- Leads are stored in **Google Sheets** acting as a lightweight CRM
-- Each lead is assigned a unique `lead_id`
-- This ID is used to connect Slack messages, AI explanations, and CRM rows
+## Core automation (AI Lead Workflow)
+The main Zap performs the following steps:
+
+1. Stores the lead in Google Sheets (acting as a lightweight CRM)
+2. Generates a unique lead identifier
+3. Applies deterministic scoring using Python
+4. Classifies lead quality (low / medium / high)
+5. Uses OpenAI to generate a structured internal summary
+6. Updates the CRM sheet with AI outputs
+7. Sends Slack alerts for high-quality leads
 
 ---
 
-## Lead Scoring Logic
-- Implemented using **Code by Zapier (Python)**
-- Deterministic, rule-based scoring
-- Outputs:
-  - score
-  - lead_quality (low / medium / high)
-  - owner_team
-  - next_step
+## Lead scoring logic
+Lead scoring is rule-based and transparent.
+Each customer action contributes to a numeric score.
 
-Scoring is transparent and explainable.
+This logic is implemented using Python inside Zapier
+to ensure explainability and business control.
 
 ---
 
-## AI Usage
+## AI usage
 OpenAI is used for:
-- Internal lead summaries
-- Suggested next steps
-- Slack-based explanations (e.g. “Why is this lead high?”)
-- Customer-facing confirmation emails (separate prompt, no internal data leakage)
+- Summarizing lead context
+- Suggesting next actions
+- Explaining lead quality in natural language
 
 AI is constrained to:
-- provided lead data only
-- no hallucination
+- provided data only
 - structured outputs
+- no hallucinated facts
 
 ---
 
-## Slack Integration
-- High-quality leads are posted to a shared Slack channel
-- Team members can reply in-thread with questions
-- The system retrieves the correct lead via `lead_id`
-- AI responds inside the same thread with a clear explanation
+## Slack interaction (Ask Why)
+When a lead is posted in Slack, team members can ask questions
+such as “Why is this lead high?”.
+
+The system retrieves the related lead data and
+responds inside the same thread with a clear explanation.
+
+This enables fast decision-making without dashboards.
 
 ---
 
-## Customer Email
-- A confirmation email is sent automatically after form submission
-- Email is customer-safe:
-  - no scores
-  - no internal logic
-  - no AI mention
-- Sent via **Email by Zapier**
+## Customer communication
+A separate automation sends a confirmation email to the lead.
+
+This email:
+- is customer-safe
+- contains no internal scoring
+- reassures the lead that the request was received
 
 ---
 
-## Notes on Deployment
-This workflow is environment-specific (Zapier, Slack, API keys).
-It is designed to be **recreated**, not shared as a live system.
-
-Screenshots and logic are provided to demonstrate behavior and design.
+## Design rationale
+The system prioritizes:
+- explainability over black-box automation
+- human-in-the-loop decision making
+- low operational complexity
